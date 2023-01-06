@@ -29,10 +29,12 @@ server.post('/sign-up', (req, res) => {
 });
 
 server.post('/tweets', (req, res) => {
+  const { user: username } = req.headers;
+  console.log(username);
   const data = req.body;
-  const user = users.find(user => user.username === data.username);
+  const user = users.find(user => user.username === username);
 
-  const isTweetInvalid = !data.tweet || !data.username;
+  const isTweetInvalid = !data.tweet;
   if (isTweetInvalid) {
     res.status(400).send('Todos os campos são obrigatórios!');
   }
@@ -42,7 +44,7 @@ server.post('/tweets', (req, res) => {
     return;
   }
 
-  const tweetInfo = { ...data, avatar: user.avatar };
+  const tweetInfo = { ...data, avatar: user.avatar, username };
   tweets.push(tweetInfo);
 
   res.status(201).send('OK');
