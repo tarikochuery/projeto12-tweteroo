@@ -15,7 +15,6 @@ server.post('/sign-up', (req, res) => {
   const user = req.body;
   const isUserInvalid = !user.username || !user.avatar;
   if (isUserInvalid) {
-    console.log(`entrei no if do user invalido`);
     res.status(400).send('Todos os campos são obrigatórios!');
     return;
   }
@@ -28,8 +27,9 @@ server.post('/sign-up', (req, res) => {
     return;
   }
 
-  if (!urlRegex.test(user.avatar)) {
-    console.log(`entrei no if do regex invalido`);
+  const isAvatarValidURL = urlRegex.test(user.avatar);
+
+  if (!isAvatarValidURL) {
     res.status(403).send('Insira uma URL válida');
     return;
   }
@@ -69,10 +69,12 @@ server.post('/tweets', (req, res) => {
 
 server.get('/tweets', (req, res) => {
   const page = Number(req.query.page);
+  console.log(page);
   const AMOUNT_OF_TWEETS = 10;
 
-  if (page) {
+  if (page !== undefined) {
     if (page < 1) {
+      console.log('Entrei no if de page invalida');
       res.status(400).send('Informe uma página válida!');
       return;
     }
