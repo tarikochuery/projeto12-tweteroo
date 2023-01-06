@@ -15,11 +15,13 @@ server.post('/sign-up', (req, res) => {
   const user = req.body;
   const isUserInvalid = !user.username || !user.avatar;
   if (isUserInvalid) {
+    console.log(`entrei no if do user invalido`);
     res.status(400).send('Todos os campos são obrigatórios!');
     return;
   }
 
   if (!urlRegex.test(user.avatar)) {
+    console.log(`entrei no if do regex invalido`);
     res.status(403).send('Insira uma URL válida');
     return;
   }
@@ -30,13 +32,14 @@ server.post('/sign-up', (req, res) => {
 
 server.post('/tweets', (req, res) => {
   const { user: username } = req.headers;
-  console.log(username);
+
   const data = req.body;
   const user = users.find(user => user.username === username);
 
   const isTweetInvalid = !data.tweet;
   if (isTweetInvalid) {
     res.status(400).send('Todos os campos são obrigatórios!');
+    return;
   }
 
   if (!user) {
@@ -61,6 +64,7 @@ server.get('/tweets', (req, res) => {
     }
 
     res.send(tweets.filter((tweet, index) => tweets.length - index <= AMOUNT_OF_TWEETS * page && tweets.length - index > AMOUNT_OF_TWEETS * (page - 1)));
+    return;
   }
 
   res.send(tweets.filter((tweet, index) => tweets.length - index <= AMOUNT_OF_TWEETS));
