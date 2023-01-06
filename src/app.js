@@ -4,7 +4,7 @@ import cors from 'cors';
 const users = [];
 const tweets = [];
 const PORT = 5000;
-const urlRegex = /[(http(s)?):\/\/(www\.)?a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/ig;
+const urlRegex = /(http(s?):)([/|.|\w|\s|-])*\.(?:jpg|gif|png)/g;
 
 const server = express();
 
@@ -15,12 +15,12 @@ server.post('/sign-up', (req, res) => {
   const user = req.body;
   const isUserInvalid = !user.username || !user.avatar;
   if (isUserInvalid) {
-    res.sendStatus(400);
+    res.status(400).send('Todos os campos devem estar preenchidos corretamente');
     return;
   }
 
   if (!urlRegex.test(user.avatar)) {
-    res.sendStatus(403);
+    res.status(403).send('Insira uma URL válida');
     return;
   }
 
@@ -31,6 +31,12 @@ server.post('/sign-up', (req, res) => {
 server.post('/tweets', (req, res) => {
   const data = req.body;
   const user = users.find(user => user.username === data.username);
+
+  const isTweetInvalid = !data.tweet || !data.username;
+  if (isTweetInvalid) {
+    res.status(400).send('Todos os campos devem estar preenchidos');
+  }
+
   if (!user) {
     res.send('UNAUTHORIZED');
     return;
