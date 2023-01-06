@@ -4,6 +4,7 @@ import cors from 'cors';
 const users = [];
 const tweets = [];
 const PORT = 5000;
+const urlRegex = /[(http(s)?):\/\/(www\.)?a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/ig;
 
 const server = express();
 
@@ -12,6 +13,17 @@ server.use(json());
 
 server.post('/sign-up', (req, res) => {
   const user = req.body;
+  const isUserInvalid = !user.username || !user.avatar;
+  if (isUserInvalid) {
+    res.sendStatus(400);
+    return;
+  }
+
+  if (!urlRegex.test(user.avatar)) {
+    res.sendStatus(403);
+    return;
+  }
+
   users.push(user);
   res.status(201).send('OK');
 });
