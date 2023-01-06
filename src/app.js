@@ -20,6 +20,14 @@ server.post('/sign-up', (req, res) => {
     return;
   }
 
+  const isUsernameString = typeof user.username === `string`;
+  const isAvatrString = typeof user.avatar === `string`;
+
+  if (!isAvatrString || !isUsernameString) {
+    res.status(403).send('Insira nome de usuário e avatar válidos');
+    return;
+  }
+
   if (!urlRegex.test(user.avatar)) {
     console.log(`entrei no if do regex invalido`);
     res.status(403).send('Insira uma URL válida');
@@ -36,9 +44,15 @@ server.post('/tweets', (req, res) => {
   const data = req.body;
   const user = users.find(user => user.username === username);
 
-  const isTweetInvalid = !data.tweet;
-  if (isTweetInvalid) {
+  const isTweetReceived = data.tweet;
+  if (!isTweetReceived) {
     res.status(400).send('Todos os campos são obrigatórios!');
+    return;
+  }
+
+  const isTweetValid = typeof data.tweet === 'string';
+  if (!isTweetValid) {
+    res.status(403).send('Insira um tweet válido');
     return;
   }
 
@@ -54,7 +68,7 @@ server.post('/tweets', (req, res) => {
 });
 
 server.get('/tweets', (req, res) => {
-  const { page } = req.query;
+  const page = Number(req.query.page);
   const AMOUNT_OF_TWEETS = 10;
 
   if (page) {
@@ -63,11 +77,11 @@ server.get('/tweets', (req, res) => {
       return;
     }
 
-    res.send(tweets.filter((tweet, index) => tweets.length - index <= AMOUNT_OF_TWEETS * page && tweets.length - index > AMOUNT_OF_TWEETS * (page - 1)));
+    res.send(tweets.filter((tweet, index) => tweets.length - index <= AMOUNT_OF_TWEETS * page && tweets.length - index > AMOUNT_OF_TWEETS * (page - 1)).reverse());
     return;
   }
 
-  res.send(tweets.filter((tweet, index) => tweets.length - index <= AMOUNT_OF_TWEETS));
+  res.send(tweets.filter((tweet, index) => tweets.length - index <= AMOUNT_OF_TWEETS).reverse());
 });
 
 server.get('/tweets/:username', (req, res) => {
