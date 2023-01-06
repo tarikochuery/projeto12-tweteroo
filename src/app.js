@@ -27,12 +27,12 @@ server.post('/sign-up', (req, res) => {
     return;
   }
 
-  const isAvatarValidURL = urlRegex.test(user.avatar);
+  //const isAvatarValidURL = urlRegex.test(user.avatar);
 
-  if (!isAvatarValidURL) {
-    res.status(403).send('Insira uma URL válida');
-    return;
-  }
+  //if (!isAvatarValidURL) {
+  //  res.status(403).send('Insira uma URL válida');
+  //  return;
+  //}
 
   users.push(user);
   res.status(201).send('OK');
