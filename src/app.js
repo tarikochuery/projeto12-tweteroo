@@ -4,7 +4,6 @@ import cors from 'cors';
 const users = [];
 const tweets = [];
 const PORT = 5000;
-const urlRegex = /(http(s?):)([/|.|\w|\s|-])*\.(?:jpg|gif|png)/g;
 
 const server = express();
 
@@ -23,16 +22,9 @@ server.post('/sign-up', (req, res) => {
   const isAvatrString = typeof user.avatar === `string`;
 
   if (!isAvatrString || !isUsernameString) {
-    res.status(403).send('Insira nome de usuário e avatar válidos');
+    res.status(400).send('Insira nome de usuário e avatar válidos');
     return;
   }
-
-  //const isAvatarValidURL = urlRegex.test(user.avatar);
-
-  //if (!isAvatarValidURL) {
-  //  res.status(403).send('Insira uma URL válida');
-  //  return;
-  //}
 
   users.push(user);
   res.status(201).send('OK');
@@ -52,7 +44,7 @@ server.post('/tweets', (req, res) => {
 
   const isTweetValid = typeof data.tweet === 'string';
   if (!isTweetValid) {
-    res.status(403).send('Insira um tweet válido');
+    res.status(400).send('Insira um tweet válido');
     return;
   }
 
