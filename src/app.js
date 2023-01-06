@@ -15,7 +15,7 @@ server.post('/sign-up', (req, res) => {
   const user = req.body;
   const isUserInvalid = !user.username || !user.avatar;
   if (isUserInvalid) {
-    res.status(400).send('Todos os campos devem estar preenchidos corretamente');
+    res.status(400).send('Todos os campos são obrigatórios!');
     return;
   }
 
@@ -34,11 +34,11 @@ server.post('/tweets', (req, res) => {
 
   const isTweetInvalid = !data.tweet || !data.username;
   if (isTweetInvalid) {
-    res.status(400).send('Todos os campos devem estar preenchidos');
+    res.status(400).send('Todos os campos são obrigatórios!');
   }
 
   if (!user) {
-    res.send('UNAUTHORIZED');
+    res.status(401).send('UNAUTHORIZED');
     return;
   }
 
